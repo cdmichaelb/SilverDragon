@@ -13,6 +13,8 @@ L:RegisterTranslations("enUS", function() return {
 	["Scan for nearby rares at a regular interval"] = true,
 	["Announce"] = true,
 	["Display a message when a rare is detected nearby"] = true,
+	["Announce Interval"] = true,
+	["Time between rare alerts"] = true,
 	["Chat"] = true,
 	["In the chatframe"] = true,
 	["Error"] = true,
