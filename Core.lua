@@ -159,7 +159,8 @@ end
 function SilverDragon:GetMobInfo(zone, name)
 	if self.db.profile.mobs[zone][name] then
 		--local x,y,level,elite,ctype,csubzone,lastseen = string.match(self.db.profile.mobs[zone][name], "^(.*):(.*):(-?%d*):(%d*):(.*):(.*):(%d*)")
-		local _, _, x,y,level,elite,ctype,csubzone,lastseen = string.find(self.db.profile.mobs[zone][name], "^(.*):(.*):(-?%d*):(%d*):(.*):(.*):(%d*)")
+               local pattern = "^([^:]+):([^:]+):(-?%d+):(%d+):([^:]*):([^:]*):(%d*)$"
+               local _, _, x, y, level, elite, ctype, csubzone, lastseen = string.find(self.db.profile.mobs[zone][name], pattern)
 		return tonumber(x), tonumber(y), tonumber(level), tonumber(elite), ctype, csubzone, tonumber(lastseen)
 	else
 		return 0, 0, 0, 0, '', '', nil
