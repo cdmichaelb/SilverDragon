@@ -18,6 +18,7 @@ function SilverDragon:OnInitialize()
 		},
 		notes = true,
 		scan = true,
+		announceInterval = 600,
 		announce = {
 			chat = true,
 			error = true,
@@ -40,23 +41,29 @@ function SilverDragon:OnInitialize()
 							else self:CancelScheduledEvent('SilverDragon_Scan') end
 						end,
 					},
-					announce = {
-						name=L["Announce"], desc=L["Display a message when a rare is detected nearby"],
-						type="group", args={
-							chat = {
-								name=L["Chat"], desc=L["In the chatframe"],
-								type="toggle",
-								get=function() return self.db.profile.announce.chat end,
-								set=function(t) self.db.profile.announce.chat = t end,
-							},
-							error = {
-								name=L["Error"], desc=L["In the errorframe"],
-								type="toggle",
-								get=function() return self.db.profile.announce.error end,
-								set=function(t) self.db.profile.announce.error = t end,
-							},
+				announce = {
+					name=L["Announce"], desc=L["Display a message when a rare is detected nearby"],
+					type="group", args={
+						chat = {
+							name=L["Chat"], desc=L["In the chatframe"],
+							type="toggle",
+							get=function() return self.db.profile.announce.chat end,
+							set=function(t) self.db.profile.announce.chat = t end,
+						},
+						error = {
+							name=L["Error"], desc=L["In the errorframe"],
+							type="toggle",
+							get=function() return self.db.profile.announce.error end,
+							set=function(t) self.db.profile.announce.error = t end,
+						},
+						interval = {
+							name=L["Announce Interval"], desc=L["Time between rare alerts"],
+							type="range", min=60, max=3600, step=60,
+							get=function() return self.db.profile.announceInterval end,
+							set=function(t) self.db.profile.announceInterval = t end,
 						},
 					},
+				},
 					notes = {
 						name=L["Notes"], desc=L["Make notes in Cartographer"],
 						type="toggle",
@@ -191,7 +198,7 @@ function SilverDragon:Announce(name, dead)
 	-- Announce the discovery of a rare.  Return true if we announced.
 	-- Only announce each rare every 10 minutes, preventing spam while we're in combat.
 	-- TODO: Make that time configurable.
-	if (not self.lastseen[name]) or (self.lastseen[name] < (time() - 600)) then
+	if (not self.lastseen[name]) or (self.lastseen[name] < (time() - self.db.profile.announceInterval)) then
 		if self.db.profile.announce.error then
 			UIErrorsFrame:AddMessage(string.format(L["%s seen!"], name), 1, 0, 0, 1, UIERRORS_HOLD_TIME)
 			if dead then
